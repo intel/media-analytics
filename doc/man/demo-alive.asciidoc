@@ -1,0 +1,22 @@
+demo-alive(1)
+=============
+
+NAME
+----
+demo-alive - run a healthcheck
+
+SYNOPSIS
+--------
+[verse]
+'demo-alive'
+
+DESCRIPTION
+-----------
+`demo-alive` performs a healthcheck of the running demo. Under docker this
+script is connected to the docker HEALTHCHECK command. With that you can
+check container health status with:
+
+------------
+docker inspect --format='{{json .State.Health}}' <container-id>
+------------
+

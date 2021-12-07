@@ -1,0 +1,50 @@
+demo-setup(1)
+=============
+
+NAME
+----
+demo-setup - script which setups a demo
+
+SYNOPSIS
+--------
+[verse]
+'demo-setup'
+
+DESCRIPTION
+-----------
+`demo setup` is a script which helps to setup a demo on a container launch.
+It checks for a various issues which might prevent successful demo and
+returns non-zero exit status if any detected.
+
+Script checks that container user:
+
+* Has enough permissions to access GPU for media and inference operations
+* Can run Intel GPU Top to get GPU utilization metrics
+* Can access input/output directories to read input data or store output artifacts
+
+USER ACCOUNTS
+-------------
+user::
+	This is a default generic user account configured for containers.
+
+PATHS
+-----
+/opt/data/artifacts::
+	Location for various demo output artifacts.
+        'user' needs 'rw' permissions for this location.
+
+/opt/data/content::
+	Location where you can put your own content for the demo to see.
+	'user' needs 'r' permission for this location.
+
+EXIT STATUS
+-----------
+0 - setup was successful
+
+255 - setup failed
+
+SEE ALSO
+--------
+link:demo-bash.asciidoc[demo-bash]
+link:demo-setup.asciidoc[demo-setup]
+

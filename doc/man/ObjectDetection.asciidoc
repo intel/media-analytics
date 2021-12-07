@@ -1,0 +1,121 @@
+ObjectDetection(1)
+==================
+
+NAME
+----
+ObjectDetection - run object detection for input video stream
+
+SYNOPSIS
+--------
+[verse]
+'ObjectDetection' [options]
+
+DESCRIPTION
+-----------
+
+Runs object detection for the input stream specified with '-i' option. By default
+INT8 quantized ssd_mobilenet_v1_coco model is used. Use '-detect_type yolo' with '-m_detect' to change
+model type and point to Yolov4 model location.
+
+'-dconf' option specifies confidence threshold: only results with the higher confidence
+then the threshold will be posted. '-b' options sets batch size.
+
+In order to evaluate performance on multiple input streams, use '-c' option to
+emulate multiple inputs. Variate '-infer' to adjust number of inference
+instances (which will handle incoming requests from all of the input streams) and
+'-nireq' to adjust number of requests each inference instance can handle in parallel.
+
+OPTIONS
+-------
+--help::
+	Print help
+
+-codec 264|265::
+	Use this codec to decode the video (default: 264)
+
+-c channels::
+	Number of input channels (default: 1). This option allows to emulate
+	processing of multiple input streams (channels)	in the same application.
+	With this option input stream will be used specified number of times in
+	parallel decoding+inference sessions. Each channel will be handled by
+	dedicated decoder. Mind however that inference instances work independently
+	and might process requests from different channels. Number of inference
+	instances and how many requests can be processed by each are controlled
+	by '-infer' and '-nireq' options respectively.
+
+-m_detect model::
+	xml model file name with absolute path, no .xml needed (default: /opt/intel/samples/models/ssd_mobilenet_v1_coco_INT8/ssd_mobilenet_v1_coco)
+
+-detect_type ssd|yolo::
+	Detection model type (default: ssd)
+
+-dshape_w width::
+	Detection model input reshape width
+	* ssd default: 300
+	* yolo default: 416
+
+-dshape_h height::
+	Detection model input reshape height
+	* ssd default: 300
+	* yolo default: 416
+
+-dconf threshold::
+	Minimum detection output confidence, range [0-1] (default: 0.8)
+
+-b batch_number::
+	Batch number in the inference model (default: 1)
+
+-infer inference_instances_number::
+	Number of independent inference instances to process incoming inference
+	requests in parallel (default: 1). Each inference instance can accept few
+	requests for parallel processing, number of such requests is controlled
+	by  '-nireq' option.
+
+-nireq req_number::
+	Number of requests  (default: 1)
+
+-r vp_ratio::
+	Ratio of decoded frames to inference frames (default: 1), =2 means doing inference every other frame.
+	"vp" stands for video processing meaning scaling operation to get input for the inference.
+
+-scale hq|fast_inplace|fast::
+	Scaling mode to use:
+	* hq           - run scaling on EUs thru rcs or ccs depending on the platform
+	* fast_inplace - run scaling with affinity to decoding, i.e. on the same vcs; scaling is done thru SFC
+	* fast         - run scaling via vecs, scaling is done thru SFC (this is default)
+
+-t seconds::
+	How many seconds this app should run. If this option is specified
+	input stream is being used in a loop.
+
+-d::
+	Dump inference input (= vp output).
+
+-p::
+	Toggle performance mode, don't dump the csv results.
+
+-va_share::
+	Share surfaces between media and inferece. This is performance
+	optimization option and is strongly recommended.
+
+OUTPUTS
+-------
+
+output.csv::
+	This is major output containing detected objects label IDs and bounding box
+	coordinates. Output can be disabled with '-p' option. File format:
+
+------------
+channel#, frame#, object#, left, top, right, bottom, id, probability
+------------
+
+VPOut_%d.300x300.rgbp::
+	Rough output in RGBP of the inference input (these are frames scaled per model
+	requirements). Output is produced per each channel (mind '%d' in the file
+	name pattern) only if '-d' option is specified on a command line.
+
+SEE ALSO
+--------
+link:ObjectClassification.asciidoc[ObjectClassification]
+link:SamplePipeline.asciidoc[SamplePipeline]
+
