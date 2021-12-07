@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Verify dockefiles are up-to-date
+      run: |
+        cmake .
+        make -j$(nproc)
+        git diff --exit-code
+
+  gst-gva:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Building DL-Streamer samples w/ Intel pkgs
+      run: docker build --no-cache --force-rm -f docker/gst-gva/ubuntu20.04/intel-gfx/Dockerfile -t intel-gva-samples .
+
+  va-samples:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Building VA samples w/ Intel pkgs
+      run: docker build --no-cache --force-rm -f docker/va-samples/ubuntu20.04/intel-gfx/Dockerfile -t intel-va-samples .
