@@ -18,7 +18,23 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_subdirectory(va-samples)
-add_subdirectory(gst-gva)
-add_subdirectory(devel)
+file(GLOB_RECURSE srcs ${CMAKE_SOURCE_DIR}/templates/*.m4)
 
+set(M4FLAGS ${M4FLAGS} -E
+  -I ${CMAKE_SOURCE_DIR}/templates
+  -I ${CMAKE_SOURCE_DIR}/templates/m4docker/system
+  -I ${CMAKE_SOURCE_DIR}/templates/m4docker/components
+  -D BUILD_PATCHES=patches -D DEVEL)
+
+add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/intel-gfx/Dockerfile
+  DEPENDS ${srcs}
+    ${CMAKE_CURRENT_SOURCE_DIR}/intel-gfx/Dockerfile.m4
+  COMMAND ${M4} ${M4FLAGS} -D OS_NAME=ubuntu -D OS_VERSION=20.04
+    ${CMAKE_CURRENT_SOURCE_DIR}/intel-gfx/Dockerfile.m4 > ${CMAKE_CURRENT_SOURCE_DIR}/intel-gfx/Dockerfile
+  VERBATIM
+  )
+
+add_custom_target(devel-ubuntu20.04-dockerfiles ALL DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/intel-gfx/Dockerfile)
+
+include(sources_ext.cmake OPTIONAL)

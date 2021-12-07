@@ -18,7 +18,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_subdirectory(va-samples)
-add_subdirectory(gst-gva)
-add_subdirectory(devel)
-
+add_subdirectory(ubuntu20.04)

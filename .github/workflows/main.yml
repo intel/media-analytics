@@ -30,3 +30,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Building VA samples w/ Intel pkgs
       run: docker build --no-cache --force-rm -f docker/va-samples/ubuntu20.04/intel-gfx/Dockerfile -t intel-va-samples .
+
+  devel:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Building VA samples w/ Intel pkgs
+      run: docker build --no-cache --force-rm -f docker/devel/ubuntu20.04/intel-gfx/Dockerfile -t intel-va-devel .
