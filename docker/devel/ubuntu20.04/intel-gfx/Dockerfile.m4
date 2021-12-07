@@ -1,4 +1,4 @@
-# Copyright (c) 2020 Intel Corporation
+# Copyright (c) 2021 Intel Corporation
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -18,7 +18,46 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-add_subdirectory(va-samples)
-add_subdirectory(gst-gva)
-add_subdirectory(devel)
+define(`DLDT_WITH_MO',true)dnl
+include(defs.m4)
+include(begin.m4)
+include(intel-gfx.m4)
+include(content.m4)
+include(models.m4)
+include(opencv.m4)
+include(dldt-ie.m4)
+include(gst-gva-sample.m4)
+include(va_sample.m4)
+include(open_model_zoo.m4)
+include(manuals.m4)
+include(samples.m4)
+include(end.m4)
+PREAMBLE
 
+ARG IMAGE=OS_NAME:OS_VERSION
+FROM $IMAGE AS base
+
+ENABLE_INTEL_GFX_REPO
+
+FROM base as content
+
+GET_CONTENT
+GET_MODELS
+
+FROM base as build
+
+BUILD_ALL()dnl
+CLEANUP()dnl
+
+# Ok, here goes the final image end-user will actually see
+FROM base
+
+LABEL vendor="Intel Corporation"
+
+INSTALL_CONTENT(content)
+INSTALL_MODELS(content)
+
+INSTALL_ALL(runtime,build)
+
+USER user
+WORKDIR /home/user

@@ -119,6 +119,15 @@ To build docker image with DL Streamer, run::
     -t intel-gva-samples \
     .
 
+To build "developer" docker image (which has both VA Samples and DL Streamer
+Samples inside, plus has tools to download/convert/quantize models), run::
+
+  docker build \
+    $(env | grep -E '(_proxy=|_PROXY)' | sed 's/^/--build-arg /') \
+    --file docker/devel/ubuntu20.04/intel-gfx/Dockerfile \
+    -t intel-va-devel \
+    .
+
 Above docker files will self-build OpenVINO and DL Streamer and fetch binary packages
 for media and compute stacks from `Intel Graphics Package Repository <https://dgpu-docs.intel.com/>`_.
 
@@ -128,6 +137,11 @@ templates via `cmake <https://cmake.org/>`_ build system. Refer to
 
 How to run?
 -----------
+
+Note that examples given below for VA samples and DL streamer are applicable
+for "developer" container build as well. For details on additional tools
+exposed in "developer" container, see `OpenVINO tools <doc/open_vino_tools.rst>`_
+article.
 
 VA Samples
 ^^^^^^^^^^
