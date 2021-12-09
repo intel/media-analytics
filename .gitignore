@@ -5,3 +5,4 @@ Makefile
 __pycache__
 build
 cl_cache
+assets/packages

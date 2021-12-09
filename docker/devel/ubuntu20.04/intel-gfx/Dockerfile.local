@@ -26,14 +26,11 @@
 ARG IMAGE=ubuntu:20.04
 FROM $IMAGE AS base
 
-RUN apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    curl ca-certificates gpg-agent software-properties-common && \
-  rm -rf /var/lib/apt/lists/*
+ARG PACKAGES_DIR=assets/packages
+COPY ${PACKAGES_DIR} /opt/apt-pkgs
 
-RUN curl -fsSL https://repositories.intel.com/graphics/intel-graphics.key | apt-key add -
-RUN apt-add-repository "deb https://repositories.intel.com/graphics/ubuntu focal main"
-
+RUN cd /opt/apt-pkgs && \
+  echo "deb [trusted=yes arch=amd64] file:///opt/apt-pkgs ./" > /etc/apt/sources.list.d/intel-graphics-local.list
 
 FROM base as content
 
