@@ -264,6 +264,7 @@ RUN cd /opt/build/gst-plugins-bad-1.18.4 && \
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     ca-certificates \
+    curl \
     meson \
     tar \
     g++ \

@@ -61,7 +61,7 @@ include(libva2.m4)
 include(gst-plugins-bad.m4)
 
 ifelse(OS_NAME,ubuntu,dnl
-`define(`GSTVAAPI_BUILD_DEPS',ca-certificates meson tar g++ wget pkg-config libdrm-dev libglib2.0-dev libudev-dev flex bison LIBVA_DEV_BUILD_DEP)'
+`define(`GSTVAAPI_BUILD_DEPS',ca-certificates curl meson tar g++ wget pkg-config libdrm-dev libglib2.0-dev libudev-dev flex bison LIBVA_DEV_BUILD_DEP)'
 `define(`GSTVAAPI_INSTALL_DEPS',libdrm2 libglib2.0-0 libpciaccess0 libgl1-mesa-glx LIBVA_INSTALL_DEP)'
 )
 

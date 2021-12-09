@@ -21,7 +21,9 @@
 define(`DLDT_WITH_MO',true)dnl
 include(defs.m4)
 include(begin.m4)
-include(intel-gfx.m4)
+ifelse(LOCAL_REPO,true,
+`include(intel-gfx-local.m4)',
+`include(intel-gfx.m4)')
 include(content.m4)
 include(models.m4)
 include(opencv.m4)
