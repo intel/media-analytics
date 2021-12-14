@@ -37,3 +37,31 @@ jobs:
     - uses: actions/checkout@v2
     - name: Building VA samples w/ Intel pkgs
       run: docker build --no-cache --force-rm -f docker/devel/ubuntu20.04/intel-gfx/Dockerfile -t intel-va-devel .
+
+  helper:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - id: build
+      run: |
+        docker build --no-cache --force-rm -f docker/helpers/ubuntu20.04/intel-gfx/Dockerfile -t intel-ma-helper .
+        mkdir assets/packages
+        docker run --rm -u $(id -u):$(id -g) -v $(pwd)/assets/packages:/opt/packages intel-ma-helper /bin/bash -c "cp /opt/apt-pkgs/* /opt/packages/"
+    - uses: actions/upload-artifact@v2
+      with:
+        path: assets/packages/
+        name: packages
+
+  devel-local:
+    needs: helper
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v2
+      with:
+        name: packages
+        path: assets/packages/
+    - id: build
+      run: |
+        docker build --no-cache --force-rm -f docker/devel/ubuntu20.04/intel-gfx/Dockerfile.local -t intel-ma-devel-local .
+
