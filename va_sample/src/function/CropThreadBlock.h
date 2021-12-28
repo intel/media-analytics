@@ -50,6 +50,8 @@ public:
     inline void SetVPMemOutTypeVideo(bool flag = false) {m_vpMemOutTypeVideo = flag; }
     inline void SetKeepAspectRatioFlag(bool flag){m_keepAspectRatio = flag; }
     inline void SetBatchSize(int batchSize) {m_batchSize = batchSize; }
+    inline void SetPipeFlag(uint32_t pipe_flag){m_pipeflag = (pipe_flag == 0 ? 0 : VA_PROC_PIPELINE_FAST);}
+
 protected:
     int PrepareInternal() override;
 
@@ -91,6 +93,8 @@ protected:
     bool m_keepAspectRatio;
     bool m_vaSyncFlag;
     std::map<uint32_t, FILE *> m_dumpFps;
+
+    uint32_t  m_pipeflag;
 };
 
 #endif

@@ -52,10 +52,17 @@ enum eFRAME_filter
     eFILTER_Max
 };
 
+enum eCROP_mode
+{
+    eCROP_DEFAULT = 0,
+    eCROP_HQ,
+    eCROP_Max
+};
 
 static int vp_ratio = 1;
 static int channel_num = 1;
 static eSCALE_mode scale_mode = eSCALE_VECS;
+static eCROP_mode crop_mode = eCROP_DEFAULT;
 static int vpp_width = 300;
 static int vpp_height = 300;
 static int crop_width = 224;
@@ -89,6 +96,9 @@ void App_ShowUsage(void)
     printf("    hq           - run scaling on EUs thru rcs or ccs depending on the platform\n");
     printf("    fast_inplace - run scaling with affinity to decoding, i.e. on the same vcs; scaling is done thru SFC\n");
     printf("    fast         - run scaling via vecs, scaling is done thru SFC (this is default)\n");
+    printf("  -crop_mode hq|fast\n");
+    printf("    hq           - run cropping on EUs thru rcs or ccs depending on the platform\n");
+    printf("    fast         - run cropping via vecs, scaling is done thru SFC (this is default)\n");
     printf("  -scale_frames all|odd  Apply scaling for the specified frames (default: all)\n");
     printf("  -t seconds             How many seconds this app should run\n");
     printf("  -p                     Performance mode, no files dumped\n");
@@ -158,6 +168,18 @@ void ParseOpt(int argc, char *argv[])
             else if(engine == "fast")
             {
                 scale_mode = eSCALE_VECS;
+            }
+        }
+        else if (sources.at(i) == "-crop_mode")
+        {
+            std::string engine = sources.at(++i);
+            if(engine == "hq")
+            {
+                crop_mode = eCROP_HQ;
+            }
+            else if(engine == "fast")
+            {
+                crop_mode = eCROP_DEFAULT;
             }
         }
         else if(sources.at(i) == "-scale_frames")
@@ -403,6 +425,7 @@ int main(int argc, char *argv[])
             c->SetOutResolution(crop_width, crop_height);
             c->SetOutFormat(vpp_output_fourcc);
             c->SetOutDump(dump_vp);
+            c->SetPipeFlag(crop_mode);
             c->Prepare();
             c->SetKeepAspectRatioFlag(false);
         }

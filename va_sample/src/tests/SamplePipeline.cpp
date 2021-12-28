@@ -40,6 +40,13 @@ enum eSCALE_mode
     eSCALE_Max
 };
 
+enum eCROP_mode
+{
+    eCROP_DEFAULT = 0,
+    eCROP_HQ,
+    eCROP_Max
+};
+
 enum eDETECT_type
 {
     eSSD = 0,
@@ -65,6 +72,7 @@ static int num_request = 1;
 static float dconf_threshold = 0.8;
 static mfxU32 codec_type = MFX_CODEC_AVC;
 static eSCALE_mode scale_mode = eSCALE_VECS;
+static eCROP_mode crop_mode = eCROP_DEFAULT;
 
 static const char* default_detect_model = "/opt/intel/samples/models/ssd_mobilenet_v1_coco_INT8/ssd_mobilenet_v1_coco";
 static const char* default_classify_model = "/opt/intel/samples/models/resnet-50-tf_INT8/resnet-50-tf_i8";
@@ -109,6 +117,9 @@ void App_ShowUsage(void)
     printf("    hq           - run scaling on EUs thru rcs or ccs depending on the platform\n");
     printf("    fast_inplace - run scaling with affinity to decoding, i.e. on the same vcs; scaling is done thru SFC\n");
     printf("    fast         - run scaling via vecs, scaling is done thru SFC (this is default)\n");
+    printf("  -crop_mode hq|fast\n");
+    printf("    hq           - run cropping on EUs thru rcs or ccs depending on the platform\n");
+    printf("    fast         - run cropping via vecs, scaling is done thru SFC (this is default)\n");
     printf("  -t seconds             How many seconds this app should run\n");
     printf("  -d                     Dump the inference input, raw data of decode and vp\n");
     printf("  -p                     Performance mode, don't dump the csv results\n");
@@ -206,6 +217,18 @@ void ParseOpt(int argc, char *argv[])
             else if(engine == "fast")
             {
                 scale_mode = eSCALE_VECS;
+            }
+        }
+        else if (sources.at(i) == "-crop_mode")
+        {
+            std::string engine = sources.at(++i);
+            if(engine == "hq")
+            {
+                crop_mode = eCROP_HQ;
+            }
+            else if(engine == "fast")
+            {
+                crop_mode = eCROP_DEFAULT;
             }
         }
         else if (sources.at(i) == "-codec")
@@ -379,6 +402,7 @@ int main(int argc, char *argv[])
         }
         crop->SetVASync(va_sync);
         crop->SetOutDump(dump_crop);
+        crop->SetPipeFlag(crop_mode);
         crop->Prepare();
     }
     INFO("After crop  prepared ");
