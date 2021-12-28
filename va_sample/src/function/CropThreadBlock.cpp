@@ -48,7 +48,8 @@ CropThreadBlock::CropThreadBlock(uint32_t index):
     m_dumpFlag(false),
     m_vaSyncFlag(false),
     m_vpMemOutTypeVideo(false),
-    m_keepAspectRatio(false)
+    m_keepAspectRatio(false),
+    m_pipeflag(0)
 {
     TRACE("");
 
@@ -425,6 +426,7 @@ int CropThreadBlock::Crop(VASurfaceID inSurf,
     pipeline_param.output_region = &output_region;
     pipeline_param.output_background_color = 0xff000000;
     pipeline_param.filter_flags = 0;
+    pipeline_param.pipeline_flags = m_pipeflag;
     pipeline_param.filters      = &filter_param_buf_id;
     pipeline_param.num_filters  = 0;
 
