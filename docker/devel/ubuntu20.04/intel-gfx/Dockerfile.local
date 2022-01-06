@@ -227,6 +227,7 @@ RUN cd /opt/build/gst-plugins-base-1.18.4 && \
     --libdir=/opt/intel/samples/lib \
     --libexecdir=/opt/intel/samples/lib \
     --buildtype=plain \
+    --wrap-mode=nodownload \
     -Dexamples=disabled \
     -Dtests=disabled \
     -Dgtk_doc=disabled && \
