@@ -123,6 +123,7 @@ RUN cd BUILD_HOME/gst-plugins-base-GSTCORE_VER && \
     --libdir=BUILD_LIBDIR \
     --libexecdir=BUILD_LIBDIR \
     --buildtype=plain \
+    --wrap-mode=nodownload \
     -Dexamples=disabled \
     -Dtests=disabled \
     -Dgtk_doc=disabled && \
