@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
     //    infer->EnabelSharingWithVA();
     //}
     
-    infer->Prepare();
+    CHECK_STATUS(infer->Prepare());
 
     VAThreadBlock::RunAllThreads();
 

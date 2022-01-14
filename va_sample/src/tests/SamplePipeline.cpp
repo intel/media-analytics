@@ -342,7 +342,7 @@ int main(int argc, char *argv[])
             dec->SetVPMemOutTypeVideo(true);
         }
         dec->SetBatchSize(batch_num * 2); // two inference after
-        dec->Prepare();
+        CHECK_STATUS(dec->Prepare());
         dec->GetDecodeResolution(&decodeWidth, &decodeHeight);
         if (decodeWidth == 0 || decodeHeight == 0)
         {
@@ -381,7 +381,7 @@ int main(int argc, char *argv[])
         {
             infer->EnabelSharingWithVA();
         }
-        infer->Prepare();
+        CHECK_STATUS(infer->Prepare());
     }
     INFO("After inference  prepared");
 
@@ -403,7 +403,7 @@ int main(int argc, char *argv[])
         crop->SetVASync(va_sync);
         crop->SetOutDump(dump_crop);
         crop->SetPipeFlag(crop_mode);
-        crop->Prepare();
+        CHECK_STATUS(crop->Prepare());
     }
     INFO("After crop  prepared ");
 
@@ -441,7 +441,7 @@ int main(int argc, char *argv[])
         {
             cla->EnabelSharingWithVA();
         }
-        cla->Prepare();
+        CHECK_STATUS(cla->Prepare());
     }
     INFO("After classification  prepared ");
 

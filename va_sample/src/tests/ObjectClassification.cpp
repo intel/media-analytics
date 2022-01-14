@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
         dec->SetVPMemOutTypeVideo(va_share); // for one channel, use va surface sharing
         dec->SetBatchSize(batch_num);
 
-        dec->Prepare();
+        CHECK_STATUS(dec->Prepare());
         INFO("DecodeThreadBlock[%d}  prepared \n", i);
     }
 
@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
             infer->EnabelSharingWithVA();
         }
 
-        infer->Prepare();
+        CHECK_STATUS(infer->Prepare());
      }
 
     VAThreadBlock::RunAllThreads();

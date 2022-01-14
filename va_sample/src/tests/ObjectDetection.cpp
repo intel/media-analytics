@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
         dec->SetCodecType(codec_type);
         dec->SetVPMemOutTypeVideo(va_share); // for one channel, use va surface sharing
 
-        dec->Prepare();
+        CHECK_STATUS(dec->Prepare());
         INFO("DecodeThreadBlock[%d]  prepared", i);
 
     }
@@ -336,12 +336,7 @@ int main(int argc, char *argv[])
             INFO("EnabelSharingWithVA ");
         }
 
-        int ret = infer->Prepare();
-        if (ret == -1)
-        {
-            ERRLOG("Failed on infer exit -1");
-            return -1;
-        }
+        CHECK_STATUS(infer->Prepare());
     }
 
     VAThreadBlock::RunAllThreads();

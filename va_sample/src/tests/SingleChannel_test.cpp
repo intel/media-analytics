@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     dec->SetVPOutResolution(300, 300);
     dec->SetVPOutFormat(MFX_FOURCC_NV12);
     dec->SetVPMemOutTypeVideo(true);
-    dec->Prepare();
+    CHECK_STATUS(dec->Prepare());
 
     infer->ConnectInput(c1->NewOutputPin());
     infer->ConnectOutput(c2->NewInputPin());
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
     sprintf(model_file, "%s/mobilenet-ssd.xml", model_path.c_str());
     sprintf(coeff_file, "%s/mobilenet-ssd.bin", model_path.c_str());
     infer->SetModelFile(model_file, coeff_file);
-    infer->Prepare();
+    CHECK_STATUS(infer->Prepare());
 
     if (vp_ratio > 1)
     {
@@ -121,13 +121,13 @@ int main(int argc, char *argv[])
             track->ConnectOutput(c3->NewInputPin());
             displayBlock->ConnectInput(c3->NewOutputPin());
             displayBlock->ConnectOutput(sink);
-            displayBlock->Prepare();
+            CHECK_STATUS(displayBlock->Prepare());
         }
         else
         {
             track->ConnectOutput(sink);
         }
-        track->Prepare();
+        CHECK_STATUS(track->Prepare());
     }
     else
     {
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
         {
             displayBlock->ConnectInput(c2->NewOutputPin());
             displayBlock->ConnectOutput(sink);
-            displayBlock->Prepare();
+            CHECK_STATUS(displayBlock->Prepare());
         }
         else
         {
