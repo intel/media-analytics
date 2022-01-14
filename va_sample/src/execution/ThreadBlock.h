@@ -30,6 +30,12 @@
 #include "DataPacket.h"
 #include "Connector.h"
 
+#define CHECK_STATUS(status)                                                  \
+    if (status != VA_STATUS_SUCCESS) {                                        \
+        fprintf(stderr,"%s:%s (%d) failed with code %d ,exiting\n", __FILE__, __FUNCTION__, __LINE__,status); \
+        return -1;                                                            \
+    }
+
 class VAThreadBlock
 {
 public:

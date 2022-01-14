@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
             d->SetVPOutputRef(0);
         d->SetCodecType(codec_type);
         d->SetFrameNumber(frame_number);
-        d->Prepare();
+        CHECK_STATUS(d->Prepare());
         d->GetDecodeResolution(&decodeWidth, &decodeHeight);
         if (decodeWidth == 0 || decodeHeight == 0)
         {
@@ -426,7 +426,7 @@ int main(int argc, char *argv[])
             c->SetOutFormat(vpp_output_fourcc);
             c->SetOutDump(dump_vp);
             c->SetPipeFlag(crop_mode);
-            c->Prepare();
+            CHECK_STATUS(c->Prepare());
             c->SetKeepAspectRatioFlag(false);
         }
         else
@@ -442,7 +442,7 @@ int main(int argc, char *argv[])
         od->ConnectOutput(c2->NewInputPin());
         od->SetInputResolution(decodeWidth, decodeHeight);
         od->SetROIRegion(crop_x, crop_y, crop_w, crop_h);
-        od->Prepare();
+        CHECK_STATUS(od->Prepare());
     }
 
     Statistics::getInstance().CountDownStart(channel_num);

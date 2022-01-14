@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
     d->SetVPRatio(1);
     d->SetVPOutResolution(vpp_w, vpp_h);
     d->SetVPOutFormat(MFX_FOURCC_RGBP);
-    d->Prepare();
+    CHECK_STATUS(d->Prepare());
     uint32_t w, h;
     d->GetDecodeResolution(&w, &h);
 
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
     infer->SetDevice(infer_device.c_str());
     infer->SetModelFile(model_xml.c_str(), model_bin.c_str());
     //infer->SetOutputResolution(w*4, h*4);
-    infer->Prepare();
+    CHECK_STATUS(infer->Prepare());
 
     e->ConnectInput(c2->NewOutputPin());
     e->ConnectOutput(sink.get());
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
     e->SetInputResolution(out_w, out_h);
     e->SetOutputRef(0); // not following blocks will use encoder output
     e->SetEncodeOutDump(true);
-    e->Prepare();
+    CHECK_STATUS(e->Prepare());
 
     VAThreadBlock::RunAllThreads();
 
