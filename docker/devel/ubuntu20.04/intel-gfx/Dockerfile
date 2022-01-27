@@ -129,7 +129,7 @@ ARG DLDT_REPO=https://github.com/openvinotoolkit/openvino.git
 
 RUN git clone ${DLDT_REPO} /opt/build/openvino && \
   cd /opt/build/openvino && \
-  git checkout dev_11102021 && \
+  git checkout 2022.1.0 && \
   git submodule update --init --recursive
 
 RUN cd /opt/build/openvino && \
@@ -156,7 +156,7 @@ RUN cd /opt/build/openvino && \
   make install && \
   make install DESTDIR=/opt/dist
 
-RUN cd /opt/build/openvino/model-optimizer && \
+RUN cd /opt/build/openvino/tools/mo && \
   python3 setup.py build && \
   python3 setup.py bdist_wheel --dist-dir=/opt/wheel
 
@@ -424,11 +424,11 @@ RUN apt-get update && \
     python3-wheel \
     wget && \
   rm -rf /var/lib/apt/lists/*
-ARG OMZ_REPO=https://github.com/opencv/open_model_zoo/archive/2021.4.tar.gz
+ARG OMZ_REPO=https://github.com/opencv/open_model_zoo/archive/2022.1.0.tar.gz
 RUN cd /opt/build && \
   wget -O - ${OMZ_REPO} | tar xz
 
-RUN cd /opt/build/open_model_zoo-2021.4/tools/downloader && \
+RUN cd /opt/build/open_model_zoo-2022.1.0/tools/model_tools && \
   python3 setup.py build && \
   python3 setup.py bdist_wheel --dist-dir=/opt/wheel
 
@@ -572,8 +572,8 @@ RUN pip3 install --prefix=/opt/intel/samples --find-links=/opt/wheel openvino_mo
 ENV PYTHONPATH="$CUSTOM_DLDT_INSTALL_DIR/python/python3.8:${PYTHONPATH}"
 COPY --from=build /opt/wheel /opt/wheel
 RUN python3 -m pip install --prefix=/opt/intel/samples /opt/wheel/* && rm -rf /opt/wheel
-COPY --from=build /opt/wheel/openmodelzoo_modeltools* /opt/wheel/
-RUN pip3 install --prefix=/opt/intel/samples --find-links=/opt/wheel openmodelzoo_modeltools tensorflow
+COPY --from=build /opt/wheel/omz_tools* /opt/wheel/
+RUN pip3 install --prefix=/opt/intel/samples --find-links=/opt/wheel omz_tools tensorflow
 
 VOLUME /opt/intel/samples/models
 # Restoring man which is excluded from the minimal ubuntu image

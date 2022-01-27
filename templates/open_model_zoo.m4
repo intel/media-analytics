@@ -20,7 +20,7 @@ dnl # SOFTWARE.
 dnl #
 include(begin.m4)
 
-DECLARE(`OMZ_VER',2021.4)
+DECLARE(`OMZ_VER',2022.1.0)
 DECLARE(`OMZ_SRC_REPO',https://github.com/opencv/open_model_zoo/archive/OMZ_VER.tar.gz)
 
 DECLARE(`OMZ_CAFFE2',false)     # ~850GB
@@ -41,14 +41,14 @@ ARG OMZ_REPO=OMZ_SRC_REPO
 RUN cd BUILD_HOME && \
   wget -O - ${OMZ_REPO} | tar xz
 
-RUN cd BUILD_HOME/open_model_zoo-OMZ_VER/tools/downloader && \
+RUN cd BUILD_HOME/open_model_zoo-OMZ_VER/tools/model_tools && \
   python3 setup.py build && \
   python3 setup.py bdist_wheel --dist-dir=BUILD_WHEEL
 ')
 
 define(`INSTALL_OMZ',`dnl
-COPY --from=$2 BUILD_WHEEL/openmodelzoo_modeltools* BUILD_WHEEL/
-RUN pip3 install --prefix=BUILD_PREFIX --find-links=BUILD_WHEEL openmodelzoo_modeltools WHEEL_EXTRAS(omz_extras)
+COPY --from=$2 BUILD_WHEEL/omz_tools* BUILD_WHEEL/
+RUN pip3 install --prefix=BUILD_PREFIX --find-links=BUILD_WHEEL omz_tools WHEEL_EXTRAS(omz_extras)
 
 VOLUME BUILD_PREFIX/models
 ')

@@ -30,7 +30,7 @@ dnl OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 dnl
 include(begin.m4)
 
-DECLARE(`DLDT_VER',dev_11102021)
+DECLARE(`DLDT_VER',2022.1.0)
 DECLARE(`DLDT_REPO_URL',https://github.com/openvinotoolkit/openvino.git)
 DECLARE(`DLDT_WARNING_AS_ERRORS',false)
 DECLARE(`DLDT_WITH_OPENCL',false)
@@ -99,7 +99,7 @@ ifelse(DLDT_WARNING_AS_ERRORS,false,`dnl
   make install && \
   make install DESTDIR=BUILD_DESTDIR
 ifelse(DLDT_WITH_MO,true,`
-RUN cd BUILD_HOME/openvino/model-optimizer && \
+RUN cd BUILD_HOME/openvino/tools/mo && \
   python3 setup.py build && \
   python3 setup.py bdist_wheel --dist-dir=BUILD_WHEEL
 ')dnl
