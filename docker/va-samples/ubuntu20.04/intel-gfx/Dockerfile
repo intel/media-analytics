@@ -122,7 +122,7 @@ ARG DLDT_REPO=https://github.com/openvinotoolkit/openvino.git
 
 RUN git clone ${DLDT_REPO} /opt/build/openvino && \
   cd /opt/build/openvino && \
-  git checkout dev_11102021 && \
+  git checkout 2022.1.0 && \
   git submodule update --init --recursive
 
 RUN cd /opt/build/openvino && \
