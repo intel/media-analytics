@@ -435,10 +435,10 @@ int DecodeThreadBlock::ReadBitStreamData()
     if (m_bufferLength > 0)
     {
         memcpy(m_mfxBS.Data + m_mfxBS.DataLength, m_buffer + m_bufferOffset, m_bufferLength);
-        m_bufferLength = 0;
-        m_bufferOffset = 0;
         m_mfxBS.DataLength += m_bufferLength;
         copiedLen += m_bufferLength;
+        m_bufferLength = 0;
+        m_bufferOffset = 0;
     }
 
     while (m_mfxBS.DataLength < m_mfxBS.MaxLength)
