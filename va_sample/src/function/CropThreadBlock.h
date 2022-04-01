@@ -84,9 +84,9 @@ protected:
 
     VAContextID m_contextID;
 
-    VASurfaceID *m_outputVASurfs;
-    uint8_t **m_outBuffers;
-    int *m_outRefs;
+    std::vector<VASurfaceID> m_outputVASurfs;
+    std::vector<uint8_t*> m_outBuffers;
+    std::vector<int> m_outRefs;
 
     bool m_dumpFlag;
     bool m_vpMemOutTypeVideo;
