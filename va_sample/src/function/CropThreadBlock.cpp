@@ -42,9 +42,6 @@ CropThreadBlock::CropThreadBlock(uint32_t index):
     m_bufferNum(256),
     m_batchSize(1),
     m_contextID(0),
-    m_outputVASurfs(nullptr),
-    m_outBuffers(nullptr),
-    m_outRefs(nullptr),
     m_dumpFlag(false),
     m_vaSyncFlag(false),
     m_vpMemOutTypeVideo(false),
@@ -58,24 +55,29 @@ CropThreadBlock::CropThreadBlock(uint32_t index):
 CropThreadBlock::~CropThreadBlock()
 {
     TRACE("");
-    for (int i = 0; i < m_bufferNum; i++)
+    if (!m_outputVASurfs.empty())
     {
-        if (m_outputVASurfs && m_outputVASurfs[i] != VA_INVALID_ID)
+        for (int i = 0; i < m_outputVASurfs.size(); i++)
         {
-            vaDestroySurfaces(m_va_dpy, &m_outputVASurfs[i], 1);
+            if (m_outputVASurfs[i] != VA_INVALID_ID)
+            {
+                vaDestroySurfaces(m_va_dpy, &m_outputVASurfs[i], 1);
+            }
         }
-        if (m_outBuffers && m_outBuffers[i])
+
+    }
+    if (!m_outBuffers.empty())
+    {
+        for (int i = 0; i < m_outBuffers.size(); i++)
         {
-            delete[] m_outBuffers[i];
-            m_outBuffers[i] = nullptr;
+            if (m_outBuffers[i])
+            {
+                delete[] m_outBuffers[i];
+                m_outBuffers[i] = nullptr;
+            }
         }
     }
 
-    if(m_outputVASurfs)
-        delete[] m_outputVASurfs;
-
-    if(m_outBuffers)
-        delete[] m_outBuffers;
 
     vaDestroyContext(m_va_dpy, m_contextID);
 
@@ -99,14 +101,16 @@ int CropThreadBlock::PrepareInternal()
 
     m_bufferNum *= m_batchSize;
 
-    m_outputVASurfs = new VASurfaceID[m_bufferNum];
-    m_outBuffers = new uint8_t*[m_bufferNum];
-    m_outRefs = new int[m_bufferNum];
-    memset(m_outBuffers, 0, sizeof(m_outBuffers));
-    memset(m_outRefs, 0, sizeof(m_outRefs));
-    for (int i = 0; i < m_bufferNum; i++)
+    m_outputVASurfs.resize(m_bufferNum);
+    m_outBuffers.resize(m_bufferNum);
+    m_outRefs.resize(m_bufferNum);
+    for (int i = 0; i < m_outputVASurfs.size(); i++)
     {
         m_outputVASurfs[i] = VA_INVALID_ID;
+    }
+    for (int i = 0; i < m_outRefs.size(); i++)
+    {
+        m_outRefs[i] = 0;
     }
 
     VAConfigID  config_id = 0;
@@ -123,7 +127,7 @@ int CropThreadBlock::PrepareInternal()
     {
         format = VA_RT_FORMAT_RGBP;
     }
-    for(int i = 0; i < m_bufferNum; i ++)
+    for(int i = 0; i < m_outputVASurfs.size(); i ++)
     {
         vaStatus = vaCreateSurfaces(m_va_dpy,
             format,
@@ -164,7 +168,7 @@ int CropThreadBlock::PrepareInternal()
 
     // allocate output buffers
     
-    for (int i = 0; i < m_bufferNum; i++)
+    for (int i = 0; i < m_outBuffers.size(); i++)
     {
         m_outBuffers[i] = new uint8_t[m_vpOutWidth * m_vpOutHeight * 3];
     }
@@ -175,7 +179,7 @@ int CropThreadBlock::PrepareInternal()
 int CropThreadBlock::FindFreeOutput()
 {
     TRACE("");
-    for (int i = 0; i < m_bufferNum; i ++)
+    for (int i = 0; i < m_outRefs.size(); i ++)
     {
         if (m_outRefs[i] <= 0)
         {
