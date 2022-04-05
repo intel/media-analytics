@@ -76,11 +76,11 @@ RUN apt-get update && \
     pkg-config \
      && \
   rm -rf /var/lib/apt/lists/*
-ARG OPENCV_REPO=https://github.com/opencv/opencv/archive/4.5.3.tar.gz
+ARG OPENCV_REPO=https://github.com/opencv/opencv/archive/4.5.5.tar.gz
 RUN cd /opt/build && \
   wget -O - ${OPENCV_REPO} | tar xz
 # TODO: file a bug against opencv since they do not accept full libdir
-RUN cd /opt/build/opencv-4.5.3 && mkdir build && cd build && \
+RUN cd /opt/build/opencv-4.5.5 && mkdir build && cd build && \
   cmake \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/opt/intel/samples \
