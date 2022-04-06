@@ -128,22 +128,22 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    VARawFilePin *fpin = new VARawFilePin(input_filename.c_str(), MFX_FOURCC_RGBP, width, height, perf_test);
-    VACsvWriterPin *sink = nullptr;
+    std::unique_ptr<VARawFilePin> fpin = std::make_unique<VARawFilePin>(input_filename.c_str(), MFX_FOURCC_RGBP, width, height, perf_test);
+    std::unique_ptr<VACsvWriterPin> sink;
     if (!perf_test)
-        sink = new VACsvWriterPin("output.csv");
-    VASinkPin *emptySink = new VASinkPin();
+        sink.reset(new VACsvWriterPin("output.csv"));
+    std::unique_ptr<VASinkPin> emptySink = std::make_unique<VASinkPin>();
 
-    InferenceThreadBlock *infer = new InferenceThreadBlock(0, modelType);
+    std::unique_ptr<InferenceThreadBlock> infer = std::make_unique<InferenceThreadBlock>(0, modelType);
 
-    infer->ConnectInput(fpin);
+    infer->ConnectInput(fpin.get());
     if (perf_test)
     {
-        infer->ConnectOutput(emptySink);
+        infer->ConnectOutput(emptySink.get());
     }
     else
     {
-        infer->ConnectOutput(sink);
+        infer->ConnectOutput(sink.get());
     }
     
     infer->SetAsyncDepth(1);
@@ -193,10 +193,5 @@ int main(int argc, char *argv[])
 
     VAThreadBlock::StopAllThreads();
 
-    delete fpin;
-    delete sink;
-    delete emptySink;
-    delete infer;
-    
     return 0;
 }

@@ -299,9 +299,9 @@ int main(int argc, char *argv[])
     std::vector<std::unique_ptr<VACsvWriterPin>> fileSinks;
     std::vector<std::unique_ptr<VASinkPin>> emptySinks;
 
-    VAConnectorRR *c1 = new VAConnectorRR(channel_num, inference_num, 10);
-    VAConnectorRR *c2 = new VAConnectorRR(inference_num, crop_num, 10);
-    VAConnectorRR *c3 = new VAConnectorRR(crop_num, classification_num, 10);
+    std::unique_ptr<VAConnectorRR> c1 = std::make_unique<VAConnectorRR>(channel_num, inference_num, 10);
+    std::unique_ptr<VAConnectorRR> c2 = std::make_unique<VAConnectorRR>(inference_num, crop_num, 10);
+    std::unique_ptr<VAConnectorRR> c3 = std::make_unique<VAConnectorRR>(crop_num, classification_num, 10);
 
     uint32_t decodeWidth = 0;
     uint32_t decodeHeight = 0;
@@ -462,10 +462,7 @@ clean:
     emptySinks.clear();
     fileSinks.clear();
 
-    delete c1;
-    delete c2;
-    delete c3;
-
     INFO("SamplePipeline test finished \n");
     return 0;
 }
+
