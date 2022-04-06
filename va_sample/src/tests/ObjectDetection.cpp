@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
     std::vector<std::unique_ptr<DecodeThreadBlock>> decodeBlocks;
     std::vector<std::unique_ptr<VAFilePin>> filePins;
 
-    VAConnectorRR *c1 = new VAConnectorRR(channel_num, channel_num_infer, batch_num * channel_num_infer * 10);
+    std::unique_ptr<VAConnectorRR> c1 = std::make_unique<VAConnectorRR>(channel_num, channel_num_infer, batch_num * channel_num_infer * 10);
     for (int i = 0; i < channel_num; i++)
     {
         INFO("intput file is %s\n", input_filename.c_str());
@@ -355,8 +355,6 @@ int main(int argc, char *argv[])
     inferBlocks.clear();
     emptySinks.clear();
     fileSinks.clear();
-
-    delete c1;
 
     INFO("ObjectDetection test finished");
 

@@ -129,8 +129,8 @@ int main(int argc, char *argv[])
     std::unique_ptr<VAFilePin> pin = std::make_unique<VAFilePin>(input_filename.c_str());
     std::unique_ptr<VASinkPin> sink = std::make_unique<VASinkPin>();
 
-    VAConnectorRR *c1 = new VAConnectorRR(1, 1, 10);
-    VAConnectorRR *c2 = new VAConnectorRR(1, 1, 10);
+    std::unique_ptr<VAConnectorRR> c1 = std::make_unique<VAConnectorRR>(1, 1, 10);
+    std::unique_ptr<VAConnectorRR> c2 = std::make_unique<VAConnectorRR>(1, 1, 10);
 
     d->ConnectInput(pin.get());
     d->ConnectOutput(c1->NewInputPin());
@@ -165,7 +165,6 @@ int main(int argc, char *argv[])
 
     VAThreadBlock::StopAllThreads();
 
-    delete c1;
-    delete c2;
     return 0;
 }
+

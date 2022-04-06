@@ -355,9 +355,9 @@ int main(int argc, char *argv[])
     std::vector<std::unique_ptr<VAFilePin>> filePins;
     std::vector<std::unique_ptr<VASinkPin>> sinks;
 
-    DummyObjectDetection *od = new DummyObjectDetection();
-    VAConnectorRR *c1 = new VAConnectorRR(channel_num, 1, 10);
-    VAConnectorRR *c2 = new VAConnectorRR(1, channel_num, 10);
+    std::unique_ptr<DummyObjectDetection> od = std::make_unique<DummyObjectDetection>();
+    std::unique_ptr<VAConnectorRR> c1 = std::make_unique<VAConnectorRR>(channel_num, 1, 10);
+    std::unique_ptr<VAConnectorRR> c2 = std::make_unique<VAConnectorRR>(1, channel_num, 10);
 
     uint32_t decodeWidth = 0;
     uint32_t decodeHeight = 0;
@@ -458,10 +458,6 @@ clean:
     filePins.clear();
     cropBlocks.clear();
     sinks.clear();
-
-    delete c1;
-    delete c2;
-    delete od;
 
     return 0;
 }

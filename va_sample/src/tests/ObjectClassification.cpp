@@ -183,17 +183,20 @@ int main(int argc, char *argv[])
     loglevel_setup();
 
     ParseOpt(argc, argv);
-    DecodeThreadBlock **decodeBlocks = new DecodeThreadBlock *[channel_num_dec];
-    VAFilePin **filePins = new VAFilePin *[channel_num_dec];
-    VAConnectorRR *c1 = new VAConnectorRR(channel_num_dec, channel_num_infer, batch_num*channel_num_infer*8);
-    TRACE("VAConnectorRR  c1 %p  filePins %p", c1, filePins);
+    std::vector<std::unique_ptr<DecodeThreadBlock>> decodeBlocks;
+    std::vector<std::unique_ptr<VAFilePin>> filePins;
+    std::unique_ptr<VAConnectorRR> c1 = std::make_unique<VAConnectorRR>(channel_num_dec, channel_num_infer, batch_num*channel_num_infer*8);
 
     for (int i = 0; i < channel_num_dec; i++)
     {
-        DecodeThreadBlock *dec = decodeBlocks[i] = new DecodeThreadBlock(i);
+        decodeBlocks.push_back(std::make_unique<DecodeThreadBlock>(i));
+        filePins.push_back(std::make_unique<VAFilePin>(input_filename.c_str(), perf_test));
+
+        auto& dec = decodeBlocks[i];
+        auto& pin = filePins[i];
+
         INFO("intput file is %s\n", input_filename.c_str());
-        VAFilePin *pin = filePins[i] = new VAFilePin(input_filename.c_str(), perf_test);
-        dec->ConnectInput(pin);
+        dec->ConnectInput(pin.get());
         dec->ConnectOutput(c1->NewInputPin());
         dec->SetDecodeOutputRef(0); // don't need decode output if no display
         dec->SetVPRatio(1);
@@ -226,20 +229,22 @@ int main(int argc, char *argv[])
         INFO("DecodeThreadBlock[%d}  prepared \n", i);
     }
 
-    InferenceThreadBlock **inferBlocks = new InferenceThreadBlock *[channel_num_infer];
-    VASinkPin** emptySinks = new VASinkPin *[channel_num_infer];
-    VACsvWriterPin** fileSinks = new VACsvWriterPin *[channel_num_infer];
+    std::vector<std::unique_ptr<InferenceThreadBlock>> inferBlocks;
+    std::vector<std::unique_ptr<VASinkPin>> emptySinks;
+    std::vector<std::unique_ptr<VACsvWriterPin>> fileSinks;
 
     for (int i = 0; i < channel_num_infer; i++) 
     {
-        InferenceThreadBlock *infer = inferBlocks[i] = new InferenceThreadBlock(i, RESNET_50);
+        inferBlocks.push_back(std::make_unique<InferenceThreadBlock>(i, RESNET_50));
+
+        auto& infer = inferBlocks[i];
+
         infer->ConnectInput(c1->NewOutputPin());
 
         if (perf_test)
         {
-            emptySinks[i] = new VASinkPin();
-            infer->ConnectOutput(emptySinks[i]);
-            fileSinks[i] = nullptr;
+            emptySinks.push_back(std::make_unique<VASinkPin>());
+            infer->ConnectOutput(emptySinks[i].get());
         }
         else
         {
@@ -248,9 +253,8 @@ int main(int argc, char *argv[])
                 sprintf(filename, "output.%02d.csv", i);
             else
                 sprintf(filename, "output.csv");
-            fileSinks[i] = new VACsvWriterPin(filename);
-            infer->ConnectOutput(fileSinks[i]);
-            emptySinks[i] = nullptr;
+            fileSinks.push_back(std::make_unique<VACsvWriterPin>(filename));
+            infer->ConnectOutput(fileSinks[i].get());
         }
 
         infer->SetAsyncDepth(num_request);
@@ -279,26 +283,13 @@ int main(int argc, char *argv[])
     VAThreadBlock::StopAllThreads();
     INFO("StopAllThreads ");
 
-    for (int i = 0; i < channel_num_dec; i++)
-    {
-        delete decodeBlocks[i];
-        delete filePins[i];
-    }
-
-    for (int i = 0; i < channel_num_infer; i++)
-    {
-        delete inferBlocks[i];
-        delete emptySinks[i];
-        delete fileSinks[i];
-    }
-
-    delete[] decodeBlocks;
-    delete[] filePins;
-    delete[] inferBlocks;
-    delete[] emptySinks;
-    delete[] fileSinks;
-    delete c1;
+    decodeBlocks.clear();
+    filePins.clear();
+    inferBlocks.clear();
+    emptySinks.clear();
+    fileSinks.clear();
 
     INFO("ObjectClassification test finished \n");
     return 0;
 }
+
