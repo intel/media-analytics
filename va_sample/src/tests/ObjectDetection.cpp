@@ -51,6 +51,7 @@ static int batch_num = 1;
 static bool dump_results = false;
 static int duration = -1;
 static int num_request = 1;
+static int num_stream = 0;
 std::string input_filename;
 std::string model_name;
 static eDETECT_type detect_type = eSSD;
@@ -91,7 +92,8 @@ void App_ShowUsage(void)
     printf("  -dconf threshold       Minimum detection output confidence, range [0-1] (default: %.1f)\n", default_dconf_threshold);
     printf("  -b batch_number        Batch number in the inference model (default: 1)\n");
     printf("  -infer infer_channels  Number of inference channels (default: 1)\n");
-    printf("  -nireq req_number      Set the inference request number\n");
+    printf("  -nireq req_number      Set the inference request number (default: 1)\n");
+    printf("  -nstreams stream_num   Set the inference stream number (default: 0)\n");
     printf("  -r vp_ratio            Ratio of decoded frames to vp frames (default: 1)\n");
     printf("                           -r 2 means doing vp every other frame\n");
     printf("  -scale hq|fast_inplace|fast\n");
@@ -198,6 +200,10 @@ void ParseOpt(int argc, char *argv[])
         else if (sources.at(i) == "-nireq")
         {
             num_request = stoi(sources.at(++i));
+        }
+        else if (sources.at(i) == "-nstreams")
+        {
+            num_stream = stoi(sources.at(++i));
         }
         else
         {
@@ -318,6 +324,7 @@ int main(int argc, char *argv[])
         }
 
         infer->SetAsyncDepth(num_request);
+        infer->SetStreamNum(num_stream);
         infer->SetBatchNum(batch_num);
         infer->SetModelInputReshapeWidth(dshape_width);
         infer->SetModelInputReshapeHeight(dshape_height);

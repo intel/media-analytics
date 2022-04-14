@@ -35,6 +35,7 @@ using namespace InferenceEngine;
 
 InferenceOV::InferenceOV():
     m_asyncDepth(1),
+    m_nStreams(0),
     m_batchNum(1),
     m_batchIndex(0),
     m_modelInputReshapeWidth(0),
@@ -59,11 +60,12 @@ InferenceOV::~InferenceOV()
     m_batchedBlobs.clear();
 }
 
-int InferenceOV::Initialize(uint32_t batch_num, uint32_t async_depth, float confidence_threshold,
+int InferenceOV::Initialize(uint32_t batch_num, uint32_t async_depth, uint32_t stream_num, float confidence_threshold,
                         uint32_t model_input_reshape_height, uint32_t model_input_reshape_width)
 {
     m_batchNum = batch_num;
     m_asyncDepth = async_depth;
+    m_nStreams = stream_num;
     m_confidenceThreshold = confidence_threshold;
     m_modelInputReshapeHeight = model_input_reshape_height;
     m_modelInputReshapeWidth = model_input_reshape_width;
@@ -92,6 +94,11 @@ void InferenceOV::IECoreInfo(const char* d)
 
 int InferenceOV::Load(const char *device, const char *model, const char *weights)
 {
+    if (m_nStreams > 0)
+    {
+        m_ie.SetConfig({{ CONFIG_KEY(GPU_THROUGHPUT_STREAMS), std::to_string(m_nStreams)}});
+    }
+    
     m_network = m_ie.ReadNetwork(model);
     m_network.setBatchSize(m_batchNum);
     m_batchNum = m_network.getBatchSize();
