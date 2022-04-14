@@ -47,7 +47,7 @@ public:
 
     static void Destroy(InferenceBlock *infer);
 
-    virtual int Initialize(uint32_t batch_num = 1, uint32_t async_depth = 1, float confidence_threshold = 0.8,
+    virtual int Initialize(uint32_t batch_num = 1, uint32_t async_depth = 1, uint32_t stream_num = 0, float confidence_threshold = 0.8,
                         uint32_t model_input_reshape_height = 0, uint32_t model_input_reshape_width = 0) = 0;
 
     // derived classes need to get input dimension and output dimension besides the base Load operation

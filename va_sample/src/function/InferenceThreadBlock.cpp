@@ -36,6 +36,7 @@ InferenceThreadBlock::InferenceThreadBlock(uint32_t index, InferenceModelType ty
     m_index(index),
     m_type(type),
     m_asyncDepth(1),
+    m_streamNum(0),
     m_batchNum(1),
     m_modelInputReshapeWidth(0),
     m_modelInputReshapeHeight(0),
@@ -60,7 +61,7 @@ int InferenceThreadBlock::PrepareInternal()
 {
     m_infer = InferenceBlock::Create(m_type);
     INFO("InferenceBlock::Create(m_type) %d ", m_type);
-    m_infer->Initialize(m_batchNum, m_asyncDepth, m_confidenceThreshold, m_modelInputReshapeHeight, m_modelInputReshapeWidth);
+    m_infer->Initialize(m_batchNum, m_asyncDepth, m_streamNum, m_confidenceThreshold, m_modelInputReshapeHeight, m_modelInputReshapeWidth);
     TRACE("Initialize m_batchNum %d    m_asyncDepth %d   m_confidenceThreshold %d m_modelInputReshapeHeight %d m_modelInputReshapeWidth %d",
         m_batchNum, m_asyncDepth, m_confidenceThreshold, m_modelInputReshapeHeight, m_modelInputReshapeWidth);
 

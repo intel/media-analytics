@@ -69,6 +69,7 @@ static bool perf_test = false;
 static bool va_share = false;
 static bool va_sync = false;
 static int num_request = 1;
+static int num_stream = 0;
 static float dconf_threshold = 0.8;
 static mfxU32 codec_type = MFX_CODEC_AVC;
 static eSCALE_mode scale_mode = eSCALE_VECS;
@@ -109,7 +110,8 @@ void App_ShowUsage(void)
     printf("  -m_classify model      xml model file name with absolute path, no .xml needed\n");
     printf("                           default: %s\n", default_classify_model);
     printf("  -b batch_number        Batch number in the inference model (default: 1)\n");
-    printf("  -nireq req_number      Set the inference request number\n");
+    printf("  -nireq req_number      Set the inference request number (default: 1)\n");
+    printf("  -nstreams stream_num   Set the inference stream number (default: 0)\n");
     printf("  -r vp_ratio            Ratio of decoded frames to vp frames (default: 1)\n");
     printf("                           -r 0   disables vp\n");
     printf("                           -r 2   means doing vp every other frame\n");
@@ -245,6 +247,10 @@ void ParseOpt(int argc, char *argv[])
         {
             num_request = stoi(sources.at(++i));
         }
+        else if (sources.at(i) == "-nstreams")
+        {
+            num_stream = stoi(sources.at(++i));
+        }
         else
         {
             printf("unknown argument: %s\n", sources.at(i).c_str());
@@ -366,6 +372,7 @@ int main(int argc, char *argv[])
         infer->ConnectInput(c1->NewOutputPin());
         infer->ConnectOutput(c2->NewInputPin());
         infer->SetAsyncDepth(num_request);
+        infer->SetStreamNum(num_stream);
         infer->SetBatchNum(batch_num);
         infer->SetModelInputReshapeWidth(dshape_width);
         infer->SetModelInputReshapeHeight(dshape_height);
@@ -429,6 +436,7 @@ int main(int argc, char *argv[])
             cla->ConnectOutput(fileSinks[i].get());
         }        
         cla->SetAsyncDepth(num_request);
+        cla->SetStreamNum(num_stream);
         cla->SetBatchNum(batch_num);
         cla->SetDevice("GPU");
 

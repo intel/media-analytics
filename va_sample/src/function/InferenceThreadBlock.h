@@ -43,6 +43,7 @@ public:
     InferenceThreadBlock& operator=(const InferenceThreadBlock&) = delete;
 
     inline void SetAsyncDepth(uint32_t depth) {m_asyncDepth = depth; }
+    inline void SetStreamNum(uint32_t num) {m_streamNum = num; }
     inline void SetBatchNum(uint32_t batch) {m_batchNum = batch; }
     inline void SetModelInputReshapeWidth(uint32_t width) {m_modelInputReshapeWidth = width; }
     inline void SetModelInputReshapeHeight(uint32_t height) {m_modelInputReshapeHeight = height; }
@@ -67,6 +68,7 @@ protected:
     uint32_t m_index;
     InferenceModelType m_type;
     uint32_t m_asyncDepth;
+    uint32_t m_streamNum;
     uint32_t m_batchNum;
     uint32_t m_modelInputReshapeWidth;
     uint32_t m_modelInputReshapeHeight;
