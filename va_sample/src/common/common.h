@@ -67,6 +67,8 @@ typedef timespec mfxTime;
 #define WILL_READ  0x1000
 #define WILL_WRITE 0x2000
 
+#define MAX_ADAPTERS_NUM 64 
+
 // =================================================================
 // Intel Media SDK memory allocator entrypoints....
 // Implementation of this functions is OS/Memory type specific.
