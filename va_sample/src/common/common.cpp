@@ -257,19 +257,19 @@ mfxStatus CreateVAEnvDRM(mfxHDL* displayHandle)
   }  
 
   //search for valid graphics device                                
-  for (int adapter_num=0;adapter_num<6;adapter_num++)
+  for (int adapter_num=0; adapter_num < 2*MAX_ADAPTERS_NUM; adapter_num++)
   {
 
     char adapterpath[256];
 
     sts = MFX_ERR_NOT_INITIALIZED;
 
-    if (adapter_num<3) {
+    if (adapter_num < MAX_ADAPTERS_NUM) {
       snprintf(adapterpath,sizeof(adapterpath),"/dev/dri/renderD%d",
 	       adapter_num+128);
     } else {
       snprintf(adapterpath,sizeof(adapterpath),"/dev/dri/card%d",
-	       adapter_num-3);
+	       adapter_num - MAX_ADAPTERS_NUM);
     }
 
     printf("opening %s\n",adapterpath); fflush(stdout);
