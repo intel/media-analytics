@@ -290,7 +290,7 @@ ARG GSTVAAPI_REPO=https://github.com/GStreamer/gstreamer-vaapi/archive/1.18.4.ta
 RUN cd /opt/build && \
   wget -O - ${GSTVAAPI_REPO} | tar xz
 
-ARG GSTREAMER_VAAPI_PATCH_VER=ae989c5fb684191e3421b7718424923b0fc48d38
+ARG GSTREAMER_VAAPI_PATCH_VER=v1.6
 ARG GSTREAMER_VAAPI_PATCH_URL="https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi/-/commit/85284f4aacc9cfc059c59aa033166fedc247e117.patch https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi/-/commit/4ff4bcd725290c8f1a52e791496f164c3090ecaa.patch https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi/-/commit/0193751ce844776ef1823f99aff053ee423f7004.patch https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi/-/commit/c27c158cb2efe285f6fcf909cb49e8a0ac88c568.patch https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi/-/commit/7809c58664519e8af2266fbb1da8dd93e78b5bc3.patch"
 RUN cd /opt/build/gstreamer-vaapi-1.18.4 && \
   ( for url in ${GSTREAMER_VAAPI_PATCH_URL}; do \
@@ -333,7 +333,7 @@ ARG GVA_REPO=https://github.com/openvinotoolkit/dlstreamer_gst.git
 
 RUN git clone ${GVA_REPO} /opt/build/gst-video-analytics && \
   cd /opt/build/gst-video-analytics && \
-  git checkout ae989c5fb684191e3421b7718424923b0fc48d38 && \
+  git checkout v1.6 && \
   git submodule update --init
 
 RUN mkdir -p /opt/build/gst-video-analytics/build && \
