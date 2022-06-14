@@ -20,8 +20,8 @@ dnl # SOFTWARE.
 dnl #
 include(begin.m4)
 
-dnl tracking ea_2022 branch
-DECLARE(`GVA_VER',ae989c5fb684191e3421b7718424923b0fc48d38)
+dnl v1.6 (2022.1) release 
+DECLARE(`GVA_VER',v1.6)
 DECLARE(`GST_VAAPI_GVA_PATCH_URL',dnl
 dnl Commits from: https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi/-/merge_requests/435
 https://gitlab.freedesktop.org/gstreamer/gstreamer-vaapi/-/commit/c27c158cb2efe285f6fcf909cb49e8a0ac88c568.patch dnl

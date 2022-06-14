@@ -32,7 +32,7 @@ include(begin.m4)
 
 # formerly https://github.com/opencv/gst-video-analytics
 DECLARE(`GVA_REPO_URL',https://github.com/openvinotoolkit/dlstreamer_gst.git)
-DECLARE(`GVA_VER',v1.5.2)
+DECLARE(`GVA_VER',v1.6)
 DECLARE(`GVA_ENABLE_PAHO_INST',OFF)
 DECLARE(`GVA_ENABLE_RDKAFKA_INST',OFF)
 DECLARE(`GVA_ENABLE_VAS_TRACKER',OFF)
